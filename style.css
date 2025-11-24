@@ -1,0 +1,135 @@
+/* Základné nastavenia */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: system-ui, sans-serif;
+}
+
+body {
+  background: #0f0f0f;
+  color: #ffffff;
+  min-height: 100vh;
+}
+
+/* --- TOP SECTION (vertikálne aj horizontálne centrovanie) --- */
+.top-section {
+  width: 100%;
+  background: #181818;
+  min-height: 140px;
+  display: flex;
+  justify-content: center;    /* vertikálne centrovanie obsahu */
+  align-items: center;        /* horizontálne centrovanie obsahu */
+  padding: 20px 0;
+  position: relative;
+}
+
+/* --- NAVBAR (v strede) --- */
+.top-nav {
+  display: none;
+  gap: 40px;
+}
+.top-nav.active {
+  display: flex;
+}
+.tab-button {
+  background: transparent;
+  border: none;
+  padding: 12px 24px;
+  color: #ffffff;
+  font-size: 1.05rem;
+  cursor: pointer;
+}
+.tab-button.active,
+.tab-button:hover {
+  background: none !important;
+  color: #ffffff !important;
+}
+
+/* --- ENG/SK – desktop = vpravo hore, ale vertikálne vycentrované --- */
+.lang-switch {
+  position: absolute;
+  right: 40px;
+  top: 50%;
+  transform: translateY(-50%);  /* vertikálne centrovanie */
+  display: flex;
+  gap: 8px;
+  z-index: 100;
+}
+.lang-btn {
+  background: transparent;
+  border: 2px solid #303030;
+  color: #ffffff;
+  padding: 8px 16px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: 0.25s ease;
+}
+.lang-btn.active,
+.lang-btn:hover {
+  background: #ffffff;
+  color: #000;
+}
+
+/* --- HLAVNÝ OBSAH --- */
+.content-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  min-height: calc(100vh - 200px);
+}
+.info-block {
+  background: #212121;
+  padding: 25px;
+  border-radius: 18px;
+  max-width: 600px;
+  text-align: center;
+  margin: auto;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.35);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.info-block:hover {
+  transform: scale(1.02);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.6);
+}
+.lang-content { display: none; }
+.lang-content.active { display: block; }
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+.name { font-size: 2rem; }
+.subtitle { font-size: 1rem; color: #aaaaaa; }
+
+/* --- MOBIL (ENG/SK sa presunie pod navbar) --- */
+@media (max-width: 650px) {
+  .top-section {
+    flex-direction: column;
+    gap: 10px;
+    min-height: 200px;
+  }
+
+  /* Navbar – TEREZ TABY PÔJDU POD SEBA */
+  .top-nav {
+    flex-direction: column;      /* !!! toto pridávame */
+    align-items: center;
+    gap: 6px;
+  }
+
+  .lang-switch {
+    position: static;
+    transform: none;
+    justify-content: center;
+    width: 100%;
+    margin-top: 5px;
+  }
+
+  .content-wrapper {
+    padding-top: 220px;
+  }
+
+  .info-block {
+    max-width: 90%;
+  }
+}
+
