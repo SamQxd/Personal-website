@@ -6,66 +6,90 @@
   font-family: system-ui, sans-serif;
 }
 
-body {
-  background: #0f0f0f;
+/* --- Pozadie: SVETLEJŠÍ Animated Gradient (spomalene) --- */
+html, body {
+  background: linear-gradient(-45deg, #141414, #1f1f1f, #333333, #1a1a1a);
+  background-size: 350% 350%;
+  animation: gradientMove 20s ease-in-out infinite;
   color: #ffffff;
   min-height: 100vh;
+  overflow-x: hidden !important;
+  position: relative;
+  z-index: 1;
 }
 
-/* --- TOP SECTION (vertikálne aj horizontálne centrovanie) --- */
+/* animácia gradientu */
+@keyframes gradientMove {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* --- TOP SECTION (navbar + ENG/SK) --- */
 .top-section {
   width: 100%;
-  background: #181818;
-  min-height: 140px;
+  background: rgba(26, 26, 26, 0.95);
+  backdrop-filter: blur(6px);
+  min-height: 80px;
   display: flex;
-  justify-content: center;    /* vertikálne centrovanie obsahu */
-  align-items: center;        /* horizontálne centrovanie obsahu */
-  padding: 20px 0;
-  position: relative;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 40px;
+  position: relative;  /* stačí, z-index už netreba */
+  z-index: 2;
 }
 
-/* --- NAVBAR (v strede) --- */
+/* --- NAVBAR --- */
 .top-nav {
   display: none;
-  gap: 40px;
+  gap: 35px;
+  align-items: center;
 }
 .top-nav.active {
   display: flex;
 }
+
 .tab-button {
-  background: transparent;
-  border: none;
-  padding: 12px 24px;
+  background: #1a1a1a;
+  border: 2px solid #3a3a3a;
+  padding: 14px 28px;
+  margin: 0 10px;
   color: #ffffff;
-  font-size: 1.05rem;
+  font-size: 1.15rem;
   cursor: pointer;
+  border-radius: 14px;
+  transition: background 0.25s ease, color 0.25s ease;
 }
-.tab-button.active,
+.tab-button.active {
+  background: #ffffff;
+  color: #000;
+  border-color: #ffffff;
+}
 .tab-button:hover {
-  background: none !important;
-  color: #ffffff !important;
+  background: #ffffff;
+  color: #000;
 }
 
-/* --- ENG/SK – desktop = vpravo hore, ale vertikálne vycentrované --- */
+/* --- ENG/SK --- */
 .lang-switch {
-  position: absolute;
-  right: 40px;
-  top: 50%;
-  transform: translateY(-50%);  /* vertikálne centrovanie */
   display: flex;
   gap: 8px;
-  z-index: 100;
+  align-items: center;
 }
+
 .lang-btn {
-  background: transparent;
-  border: 2px solid #303030;
+  background: #1a1a1a;
+  border: 2px solid #3a3a3a;
   color: #ffffff;
   padding: 8px 16px;
   border-radius: 12px;
   cursor: pointer;
-  transition: 0.25s ease;
+  transition: background 0.25s ease, color 0.25s ease;
 }
-.lang-btn.active,
+.lang-btn.active {
+  background: #ffffff;
+  color: #000;
+}
 .lang-btn:hover {
   background: #ffffff;
   color: #000;
@@ -80,6 +104,7 @@ body {
   padding: 60px 20px;
   min-height: calc(100vh - 200px);
 }
+
 .info-block {
   background: #212121;
   padding: 25px;
@@ -88,12 +113,13 @@ body {
   text-align: center;
   margin: auto;
   box-shadow: 0 4px 12px rgba(0,0,0,0.35);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition: box-shadow 0.3s ease;
 }
 .info-block:hover {
-  transform: scale(1.02);
-  box-shadow: 0 8px 24px rgba(0,0,0,0.6);
+  box-shadow: 0 8px 22px rgba(0,0,0,0.5);
 }
+
+/* --- SKRYTIE OBSahu --- */
 .lang-content { display: none; }
 .lang-content.active { display: block; }
 .tab-content { display: none; }
@@ -101,27 +127,26 @@ body {
 .name { font-size: 2rem; }
 .subtitle { font-size: 1rem; color: #aaaaaa; }
 
-/* --- MOBIL (ENG/SK sa presunie pod navbar) --- */
+/* --- MOBIL --- */
 @media (max-width: 650px) {
   .top-section {
     flex-direction: column;
     gap: 10px;
     min-height: 200px;
+    padding: 20px;
   }
 
-  /* Navbar – TEREZ TABY PÔJDU POD SEBA */
   .top-nav {
-    flex-direction: column;      /* !!! toto pridávame */
+    flex-direction: column;
     align-items: center;
-    gap: 6px;
+    gap: 8px;
   }
 
   .lang-switch {
     position: static;
-    transform: none;
     justify-content: center;
+    margin-top: 10px;
     width: 100%;
-    margin-top: 5px;
   }
 
   .content-wrapper {
@@ -132,4 +157,3 @@ body {
     max-width: 90%;
   }
 }
-
