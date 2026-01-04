@@ -4,28 +4,34 @@
   <meta charset="UTF-8" />
   <title>Resume - Cybersecurity Student</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
   <link rel="stylesheet" href="style.css" />
+
+  <!-- LEAFLET -->
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+  />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 </head>
 <body>
 
-  <!-- HORNÁ SEKCIA S FAREBNÝM PÁSMOM -->
   <div class="top-section">
 
     <!-- NAVBAR EN -->
     <nav class="top-nav nav-eng active">
       <button class="tab-button active" data-tab="info">Info</button>
       <button class="tab-button" data-tab="education">Education</button>
-      <button class="tab-button" data-tab="experience">Experience</button>
+      <button class="tab-button" data-tab="experience">Certificates</button>
     </nav>
 
     <!-- NAVBAR SK -->
     <nav class="top-nav nav-sk">
       <button class="tab-button active" data-tab="info">Info</button>
       <button class="tab-button" data-tab="education">Vzdelanie</button>
-      <button class="tab-button" data-tab="experience">Skúsenosti</button>
+      <button class="tab-button" data-tab="experience">Certifikáty</button>
     </nav>
 
-    <!-- JAZYK -->
     <div class="lang-switch">
       <button class="lang-btn active" data-lang="eng">ENG</button>
       <button class="lang-btn" data-lang="sk">SK</button>
@@ -33,53 +39,88 @@
 
   </div>
 
-  <!-- HLAVNÝ OBSAH -->
   <div class="content-wrapper">
 
-    <!-- ANGLICKY -->
+    <!-- ENGLISH -->
     <div class="lang-content lang-eng active">
+
       <section id="info-eng" class="tab-content active">
         <div class="info-block">
           <h1 class="name">Your Name</h1>
           <p class="subtitle">21 y/o · Cybersecurity student at TUKE</p>
+
           <p>I am a cybersecurity student...</p>
+
+          <h3 style="margin-top:18px;">Travel map</h3>
+          <div id="travel-map-eng" class="travel-map"></div>
         </div>
       </section>
 
       <section id="education-eng" class="tab-content">
         <div class="info-block">
-          <p>Education details in English...</p>
+          <h2>Education</h2>
+
+          <h3>Gymnázium Alejová 1, Košice</h3>
+          <p>2020 – 2024</p>
+
+          <hr style="margin:14px 0; opacity:.3;">
+
+          <h3>Technical University of Košice — FEI</h3>
+          <p>Bachelor’s Degree · Cybersecurity</p>
+          <p>2024 – </p>
         </div>
       </section>
 
       <section id="experience-eng" class="tab-content">
         <div class="info-block">
-          <p>Experience details in English...</p>
+          <iframe
+            src="https://tryhackme.com/api/v2/badges/public-profile?userPublicId=4155565"
+            style="border:none;width:100%;min-height:320px;"
+          ></iframe>
         </div>
       </section>
+
     </div>
 
     <!-- SLOVENSKY -->
     <div class="lang-content lang-sk">
+
       <section id="info-sk" class="tab-content active">
         <div class="info-block">
           <h1 class="name">Tvoje Meno</h1>
           <p class="subtitle">21 rokov · študent kyberbezpečnosti na TUKE</p>
+
           <p>Som študent kyberbezpečnosti...</p>
+
+          <h3 style="margin-top:18px;">Krajiny, kde som bol</h3>
+          <div id="travel-map-sk" class="travel-map"></div>
         </div>
       </section>
 
       <section id="education-sk" class="tab-content">
         <div class="info-block">
-          <p>Štúdium na TUKE...</p>
+          <h2>Vzdelanie</h2>
+
+          <h3>Gymnázium Alejová 1, Košice</h3>
+          <p>2020 – 2024</p>
+
+          <hr style="margin:14px 0; opacity:.3;">
+
+          <h3>Technická univerzita v Košiciach — FEI</h3>
+          <p>Bakalárske štúdium · Kyberbezpečnosť</p>
+          <p>2024 – </p>
         </div>
       </section>
 
       <section id="experience-sk" class="tab-content">
         <div class="info-block">
-          <p>Skúsenosti / projekty...</p>
+          <iframe
+            src="https://tryhackme.com/api/v2/badges/public-profile?userPublicId=4155565"
+            style="border:none;width:100%;min-height:320px;"
+          ></iframe>
         </div>
       </section>
+
     </div>
 
   </div>
