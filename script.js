@@ -1,78 +1,90 @@
-let currentLang = 'eng';
+let currentLang = "eng";
 
-const tabButtons = document.querySelectorAll('.tab-button');
-const langBtns = document.querySelectorAll('.lang-btn');
-const langBlocks = document.querySelectorAll('.lang-content');
-const navbars = document.querySelectorAll('.top-nav');
+const savedLang = localStorage.getItem("lang");
+if (savedLang) currentLang = savedLang;
+
+const tabButtons = document.querySelectorAll(".tab-button");
+const langBtns = document.querySelectorAll(".lang-btn");
+const langBlocks = document.querySelectorAll(".lang-content");
+const navbars = document.querySelectorAll(".top-nav");
 
 let mapENG = null;
 let mapSK = null;
 
-// ---------------- TAB PREPÍNANIE ----------------
-tabButtons.forEach(btn => {
-  btn.addEventListener('click', () => {
-    tabButtons.forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
+/* ---------------- APLIKOVANIE JAZYKA PRI NAČÍTANÍ ---------------- */
+function applyLanguageOnLoad() {
+  langBtns.forEach(b => b.classList.remove("active"));
+  document
+    .querySelector(`.lang-btn[data-lang="${currentLang}"]`)
+    ?.classList.add("active");
 
-    document.querySelectorAll('.tab-content')
-      .forEach(tab => tab.classList.remove('active'));
+  langBlocks.forEach(block => block.classList.remove("active"));
+  document.querySelector(`.lang-${currentLang}`)?.classList.add("active");
+
+  navbars.forEach(nav => nav.classList.remove("active"));
+  document.querySelector(`.nav-${currentLang}`)?.classList.add("active");
+
+  const activeTab =
+    document.querySelector(".tab-button.active")?.dataset.tab || "info";
+
+  document
+    .getElementById(`${activeTab}-${currentLang}`)
+    ?.classList.add("active");
+}
+
+/* ---------------- TAB PREPÍNANIE ---------------- */
+tabButtons.forEach(btn => {
+  btn.addEventListener("click", () => {
+    tabButtons.forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+
+    document
+      .querySelectorAll(".tab-content")
+      .forEach(tab => tab.classList.remove("active"));
 
     const tabName = btn.dataset.tab;
     const target = document.getElementById(`${tabName}-${currentLang}`);
-    if (target) target.classList.add('active');
+    if (target) target.classList.add("active");
 
     fixMap();
   });
 });
 
-// ---------------- JAZYK PREPÍNANIE ----------------
+/* ---------------- JAZYK PREPÍNANIE (RELOAD) ---------------- */
 langBtns.forEach(btn => {
-  btn.addEventListener('click', () => {
+  btn.addEventListener("click", () => {
     currentLang = btn.dataset.lang;
-
-    langBtns.forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-
-    langBlocks.forEach(block => block.classList.remove('active'));
-    document.querySelector(`.lang-${currentLang}`).classList.add('active');
-
-    navbars.forEach(nav => nav.classList.remove('active'));
-    document.querySelector(`.nav-${currentLang}`).classList.add('active');
-
-    const activeTab = document.querySelector('.tab-button.active').dataset.tab;
-    document.getElementById(`${activeTab}-${currentLang}`).classList.add('active');
-
-    fixMap();
+    localStorage.setItem("lang", currentLang);
+    location.reload();
   });
 });
 
-// ---------------- MAPY (LEAFLET) ----------------
+/* ---------------- MAPY (LEAFLET) ---------------- */
 document.addEventListener("DOMContentLoaded", () => {
+  applyLanguageOnLoad();
 
   const visitedPlaces = [
-    { name: "Slovakia", coords: [48.7, 19.7] },
-    { name: "Czech Republic", coords: [49.8, 15.4] },
-     // nové krajiny
-    { name: "Poland", coords: [52.1, 19.4] },
-    { name: "Hungary", coords: [47.1, 19.5] },
-    { name: "Austria", coords: [47.6, 14.1] },
-    { name: "Serbia", coords: [44.0, 20.9] },
-    { name: "Romania", coords: [45.9, 24.9] },
-    { name: "Bulgaria", coords: [42.7, 25.5] },
-    { name: "Greece", coords: [39.1, 23.7] },
-    { name: "Italy", coords: [42.8, 12.5] },
-    { name: "Belgium", coords: [50.8, 4.5] },
-    { name: "Netherlands", coords: [52.1, 5.3] },
-    { name: "Luxembourg", coords: [49.8, 6.1] },
-    { name: "United Kingdom", coords: [54.1, -2.8] },
-    { name: "Andorra", coords: [42.5, 1.5] },
-    { name: "France", coords: [46.6, 2.2] },
-    { name: "Spain", coords: [40.3, -3.7] },
-    { name: "Latvia", coords: [56.9, 24.6] },
-    { name: "Lithuania", coords: [55.2, 23.9] },
-    { name: "Estonia", coords: [58.7, 25.0] },
-    { name: "Japan", coords: [36.2, 138.3] }
-    
+    { name: "Slovakia", code: "SK", coords: [48.7, 19.7], cities: ["Bratislava", "Košice", "Prešov"] },
+    { name: "Czech Republic", code: "CZ", coords: [49.8, 15.4], cities: ["Prague", "Brno", "Ostrava"] },
+    { name: "Poland", code: "PL", coords: [52.1, 19.4], cities: ["Warsaw", "Kraków", "Łódź"] },
+    { name: "Hungary", code: "HU", coords: [47.1, 19.5], cities: ["Budapest", "Debrecen", "Szeged"] },
+    { name: "Austria", code: "AT", coords: [47.6, 14.1], cities: ["Vienna", "Graz", "Linz"] },
+    { name: "Serbia", code: "RS", coords: [44.0, 20.9], cities: ["Belgrade", "Novi Sad", "Niš"] },
+    { name: "Romania", code: "RO", coords: [45.9, 24.9], cities: ["Bucharest", "Cluj-Napoca", "Timișoara"] },
+    { name: "Bulgaria", code: "BG", coords: [42.7, 25.5], cities: ["Sofia", "Plovdiv", "Varna"] },
+    { name: "Greece", code: "GR", coords: [39.1, 23.7], cities: ["Athens", "Thessaloniki", "Patras"] },
+    { name: "Italy", code: "IT", coords: [42.8, 12.5], cities: ["Rome", "Milan", "Naples"] },
+    { name: "Belgium", code: "BE", coords: [50.8, 4.5], cities: ["Brussels", "Antwerp", "Ghent"] },
+    { name: "Netherlands", code: "NL", coords: [52.1, 5.3], cities: ["Amsterdam", "Rotterdam", "The Hague"] },
+    { name: "Luxembourg", code: "LU", coords: [49.8, 6.1], cities: ["Luxembourg City", "Esch-sur-Alzette", "Differdange"] },
+    { name: "United Kingdom", code: "UK", coords: [54.1, -2.8], cities: ["London", "Birmingham", "Manchester"] },
+    { name: "Andorra", code: "AD", coords: [42.5, 1.5], cities: ["Andorra la Vella", "Escaldes-Engordany"] },
+    { name: "France", code: "FR", coords: [46.6, 2.2], cities: ["Paris", "Marseille", "Lyon"] },
+    { name: "Spain", code: "ES", coords: [40.3, -3.7], cities: ["Madrid", "Barcelona", "Valencia"] },
+    { name: "Latvia", code: "LV", coords: [56.9, 24.6], cities: ["Riga", "Daugavpils", "Liepāja"] },
+    { name: "Lithuania", code: "LT", coords: [55.2, 23.9], cities: ["Vilnius", "Kaunas", "Klaipėda"] },
+    { name: "Estonia", code: "EE", coords: [58.7, 25.0], cities: ["Tallinn", "Tartu", "Narva"] },
+    { name: "Japan", code: "JP", coords: [36.2, 138.3], cities: ["Tokyo", "Osaka", "Yokohama"] }
   ];
 
   function initMap(elementId) {
@@ -83,15 +95,28 @@ document.addEventListener("DOMContentLoaded", () => {
 
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
       maxZoom: 10,
-      attribution: "&copy; OpenStreetMap",
+      attribution: "&copy; OpenStreetMap"
     }).addTo(map);
 
-    // DEFAULT MARKER
-    visitedPlaces.forEach(place => {
-      L.marker(place.coords)
-        .addTo(map)
-        .bindPopup(`<b>${place.name}</b>`);
+    // skupina pre clustery
+    const markers = L.markerClusterGroup({
+      maxClusterRadius: 40   // default je ~80 — menšie číslo = menej mergovania
     });
+
+    visitedPlaces.forEach(place => {
+      const randomCity =
+        place.cities[Math.floor(Math.random() * place.cities.length)];
+
+      const randomNumber = Math.floor(Math.random() * 90) + 10;
+
+      const popupText = `<b>${randomCity} ${place.code} — FREE#${randomNumber}</b>`;
+
+      const marker = L.marker(place.coords).bindPopup(popupText);
+
+      markers.addLayer(marker);
+    });
+
+    map.addLayer(markers);
 
     return map;
   }
@@ -102,19 +127,16 @@ document.addEventListener("DOMContentLoaded", () => {
   setTimeout(fixMap, 300);
 });
 
-// ---------------- OPRAVA VEĽKOSTI MAPY PRI PREPÍNANÍ ----------------
+/* ---------------- OPRAVA VEĽKOSTI MAPY PRI PREPÍNANÍ ---------------- */
 function fixMap() {
-  // hneď
   if (mapENG) mapENG.invalidateSize();
   if (mapSK) mapSK.invalidateSize();
 
-  // po chvíli
   setTimeout(() => {
     if (mapENG) mapENG.invalidateSize();
     if (mapSK) mapSK.invalidateSize();
   }, 300);
 
-  // po vykreslení layoutu
   requestAnimationFrame(() => {
     if (mapENG) mapENG.invalidateSize();
     if (mapSK) mapSK.invalidateSize();

@@ -118,10 +118,12 @@ html, body {
   box-shadow: 0 8px 22px rgba(0,0,0,0.5);
 }
 
-/* MAPA */
+/* MAPA — responzívna, rovnaká pre oba jazyky */
 .travel-map {
   width: 100%;
-  height: 480px;
+  aspect-ratio: 4 / 3;
+  max-height: 520px;
+  min-height: 260px;
   overflow: hidden;
   border-radius: 14px;
 }
@@ -186,3 +188,53 @@ html, body {
 .travel-map .leaflet-container {
   height: 100% !important;
 }
+
+/* --- ŠKOLY — logá + text --- */
+.school {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  margin: 14px 0;
+  text-align: left;
+}
+
+.school img {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+  border-radius: 10px;
+  background: #111;
+  padding: 6px;
+}
+
+/* --- SOCIAL FOOTER (ICONS) --- */
+.social-footer {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  gap: 26px;
+  padding: 32px 0 22px;
+}
+
+.social-footer a {
+  width: 26px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #888;
+  transition: color 0.25s ease, transform 0.25s ease;
+}
+
+.social-footer svg {
+  width: 100%;
+  height: 100%;
+  fill: currentColor;
+}
+
+.social-footer a:hover {
+  color: #fff;
+  transform: translateY(-2px);
+}
+
+
