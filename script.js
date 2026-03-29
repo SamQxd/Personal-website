@@ -4,32 +4,117 @@ const savedLang = localStorage.getItem("lang");
 if (savedLang) currentLang = savedLang;
 
 const tabButtons = document.querySelectorAll(".tab-button");
-const langBtns = document.querySelectorAll(".lang-btn");
+const langBtns   = document.querySelectorAll(".lang-btn");
 const langBlocks = document.querySelectorAll(".lang-content");
-const navbars = document.querySelectorAll(".top-nav");
+const navbars    = document.querySelectorAll(".top-nav");
 
-let mapENG = null;
-let mapSK = null;
+let globeENG = null;
+let globeSK  = null;
+
+/* ISO numerické kódy (world-atlas 110m) */
+const visitedNumeric = new Set([
+  703, 203, 616, 348, 40, 688, 642, 100,
+  300, 380, 56, 528, 442, 826, 250, 724,
+  428, 440, 233, 392
+]);
+
+const countryNames = {
+  703:"Slovakia", 203:"Czech Republic", 616:"Poland", 348:"Hungary",
+  40:"Austria", 688:"Serbia", 642:"Romania", 100:"Bulgaria",
+  300:"Greece", 380:"Italy", 56:"Belgium", 528:"Netherlands",
+  442:"Luxembourg", 826:"United Kingdom", 250:"France", 724:"Spain",
+  428:"Latvia", 440:"Lithuania", 233:"Estonia", 392:"Japan"
+};
+
+/* Micro-štáty ako malé ručné polygóny */
+const microFeatures = [
+  { name:"Andorra",       visited:true,  c:[[1.35,42.38],[1.85,42.38],[1.85,42.68],[1.35,42.68],[1.35,42.38]] },
+  { name:"Monaco",        visited:false, c:[[7.33,43.71],[7.45,43.71],[7.45,43.79],[7.33,43.79],[7.33,43.71]] },
+  { name:"San Marino",    visited:false, c:[[12.35,43.85],[12.55,43.85],[12.55,44.00],[12.35,44.00],[12.35,43.85]] },
+  { name:"Liechtenstein", visited:false, c:[[9.45,47.03],[9.66,47.03],[9.66,47.28],[9.45,47.28],[9.45,47.03]] },
+].map(m => ({
+  type:"Feature",
+  properties:{ _name:m.name, _visited:m.visited },
+  geometry:{ type:"Polygon", coordinates:[m.c] }
+}));
+
+/* ---------------- INIT GLÓBUS ---------------- */
+function initGlobe(containerId) {
+  const el = document.getElementById(containerId);
+  if (!el) return null;
+
+  const g = Globe()
+    .width(el.clientWidth || 700)
+    .height(el.clientHeight || 450)
+    (el);
+
+  /* Blue Marble — svetlá, farebná Zem */
+  g.globeImageUrl("https://unpkg.com/three-globe/example/img/earth-blue-marble.jpg")
+   .backgroundImageUrl("https://unpkg.com/three-globe/example/img/night-sky.png")
+   .backgroundColor("rgba(0,0,0,0)");
+
+  g.controls().autoRotate      = true;
+  g.controls().autoRotateSpeed = 0.5;
+  g.controls().enableZoom      = true;
+  g.pointOfView({ lat: 48, lng: 15, altitude: 1.9 });
+
+  /* Oprava lighting-u — neutralizuj oranžový ambient */
+  setTimeout(() => {
+    const canvas = el.querySelector("canvas");
+    if (canvas) { canvas.style.display = "block"; canvas.style.margin = "0 auto"; }
+
+    g.scene().traverse(obj => {
+      if (obj.isLight) {
+        obj.color.set("#ffffff");
+        if (obj.isAmbientLight)     obj.intensity = 0.5;
+        if (obj.isDirectionalLight) obj.intensity = 0.8;
+      }
+    });
+  }, 250);
+
+  /* 110m TopoJSON + micro-štáty */
+  fetch("https://unpkg.com/world-atlas@2.0.2/countries-110m.json")
+    .then(r => r.json())
+    .then(world => {
+      const features = [
+        ...topojson.feature(world, world.objects.countries).features,
+        ...microFeatures
+      ];
+
+      g.polygonsData(features)
+       .polygonCapColor(f => {
+         const visited = f.properties._visited !== undefined
+           ? f.properties._visited
+           : visitedNumeric.has(parseInt(f.id));
+         return visited ? "#e8820a" : "#2c3e50";
+       })
+       .polygonSideColor(() => "#000")
+       .polygonStrokeColor(() => "rgba(255,255,255,0.5)")
+       .polygonAltitude(0.006)
+       .polygonLabel(f => {
+         const name = f.properties._name || countryNames[parseInt(f.id)];
+         const visited = f.properties._visited !== undefined
+           ? f.properties._visited
+           : visitedNumeric.has(parseInt(f.id));
+         return (name && visited)
+           ? `<div style="background:#111;border:1px solid #ffa03c;color:#ffa03c;font-weight:600;padding:4px 10px;border-radius:6px;">${name}</div>`
+           : "";
+       });
+    });
+
+  return g;
+}
 
 /* ---------------- APLIKOVANIE JAZYKA PRI NAČÍTANÍ ---------------- */
 function applyLanguageOnLoad() {
   langBtns.forEach(b => b.classList.remove("active"));
-  document
-    .querySelector(`.lang-btn[data-lang="${currentLang}"]`)
-    ?.classList.add("active");
-
-  langBlocks.forEach(block => block.classList.remove("active"));
+  document.querySelector(`.lang-btn[data-lang="${currentLang}"]`)?.classList.add("active");
+  langBlocks.forEach(b => b.classList.remove("active"));
   document.querySelector(`.lang-${currentLang}`)?.classList.add("active");
-
-  navbars.forEach(nav => nav.classList.remove("active"));
+  navbars.forEach(n => n.classList.remove("active"));
   document.querySelector(`.nav-${currentLang}`)?.classList.add("active");
-
-  const activeTab =
-    document.querySelector(".tab-button.active")?.dataset.tab || "info";
-
-  document
-    .getElementById(`${activeTab}-${currentLang}`)
-    ?.classList.add("active");
+  const activeTab = document.querySelector(".tab-button.active")?.dataset.tab || "info";
+  document.getElementById(`${activeTab}-${currentLang}`)?.classList.add("active");
 }
 
 /* ---------------- TAB PREPÍNANIE ---------------- */
@@ -37,20 +122,13 @@ tabButtons.forEach(btn => {
   btn.addEventListener("click", () => {
     tabButtons.forEach(b => b.classList.remove("active"));
     btn.classList.add("active");
-
-    document
-      .querySelectorAll(".tab-content")
-      .forEach(tab => tab.classList.remove("active"));
-
-    const tabName = btn.dataset.tab;
-    const target = document.getElementById(`${tabName}-${currentLang}`);
+    document.querySelectorAll(".tab-content").forEach(t => t.classList.remove("active"));
+    const target = document.getElementById(`${btn.dataset.tab}-${currentLang}`);
     if (target) target.classList.add("active");
-
-    fixMap();
   });
 });
 
-/* ---------------- JAZYK PREPÍNANIE (RELOAD) ---------------- */
+/* ---------------- JAZYK PREPÍNANIE ---------------- */
 langBtns.forEach(btn => {
   btn.addEventListener("click", () => {
     currentLang = btn.dataset.lang;
@@ -59,86 +137,19 @@ langBtns.forEach(btn => {
   });
 });
 
-/* ---------------- MAPY (LEAFLET) ---------------- */
+/* ---------------- ACCORDION → LAZY INIT GLÓBUS ---------------- */
 document.addEventListener("DOMContentLoaded", () => {
   applyLanguageOnLoad();
 
-  const visitedPlaces = [
-    { name: "Slovakia", code: "SK", coords: [48.7, 19.7], cities: ["Bratislava", "Košice", "Prešov"] },
-    { name: "Czech Republic", code: "CZ", coords: [49.8, 15.4], cities: ["Prague", "Brno", "Ostrava"] },
-    { name: "Poland", code: "PL", coords: [52.1, 19.4], cities: ["Warsaw", "Kraków", "Łódź"] },
-    { name: "Hungary", code: "HU", coords: [47.1, 19.5], cities: ["Budapest", "Debrecen", "Szeged"] },
-    { name: "Austria", code: "AT", coords: [47.6, 14.1], cities: ["Vienna", "Graz", "Linz"] },
-    { name: "Serbia", code: "RS", coords: [44.0, 20.9], cities: ["Belgrade", "Novi Sad", "Niš"] },
-    { name: "Romania", code: "RO", coords: [45.9, 24.9], cities: ["Bucharest", "Cluj-Napoca", "Timișoara"] },
-    { name: "Bulgaria", code: "BG", coords: [42.7, 25.5], cities: ["Sofia", "Plovdiv", "Varna"] },
-    { name: "Greece", code: "GR", coords: [39.1, 23.7], cities: ["Athens", "Thessaloniki", "Patras"] },
-    { name: "Italy", code: "IT", coords: [42.8, 12.5], cities: ["Rome", "Milan", "Naples"] },
-    { name: "Belgium", code: "BE", coords: [50.8, 4.5], cities: ["Brussels", "Antwerp", "Ghent"] },
-    { name: "Netherlands", code: "NL", coords: [52.1, 5.3], cities: ["Amsterdam", "Rotterdam", "The Hague"] },
-    { name: "Luxembourg", code: "LU", coords: [49.8, 6.1], cities: ["Luxembourg City", "Esch-sur-Alzette", "Differdange"] },
-    { name: "United Kingdom", code: "UK", coords: [54.1, -2.8], cities: ["London", "Birmingham", "Manchester"] },
-    { name: "Andorra", code: "AD", coords: [42.5, 1.5], cities: ["Andorra la Vella", "Escaldes-Engordany"] },
-    { name: "France", code: "FR", coords: [46.6, 2.2], cities: ["Paris", "Marseille", "Lyon"] },
-    { name: "Spain", code: "ES", coords: [40.3, -3.7], cities: ["Madrid", "Barcelona", "Valencia"] },
-    { name: "Latvia", code: "LV", coords: [56.9, 24.6], cities: ["Riga", "Daugavpils", "Liepāja"] },
-    { name: "Lithuania", code: "LT", coords: [55.2, 23.9], cities: ["Vilnius", "Kaunas", "Klaipėda"] },
-    { name: "Estonia", code: "EE", coords: [58.7, 25.0], cities: ["Tallinn", "Tartu", "Narva"] },
-    { name: "Japan", code: "JP", coords: [36.2, 138.3], cities: ["Tokyo", "Osaka", "Yokohama"] }
-  ];
-
-  function initMap(elementId) {
-    const el = document.getElementById(elementId);
-    if (!el) return null;
-
-    const map = L.map(elementId).setView([48.7, 19.7], 5);
-
-    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-      maxZoom: 10,
-      attribution: "&copy; OpenStreetMap"
-    }).addTo(map);
-
-    // skupina pre clustery
-    const markers = L.markerClusterGroup({
-      maxClusterRadius: 40   // default je ~80 — menšie číslo = menej mergovania
+  document.querySelectorAll(".cert-accordion").forEach(details => {
+    details.addEventListener("toggle", () => {
+      if (!details.open) return;
+      if (details.querySelector("#travel-map-eng") && !globeENG) {
+        setTimeout(() => { globeENG = initGlobe("travel-map-eng"); }, 80);
+      }
+      if (details.querySelector("#travel-map-sk") && !globeSK) {
+        setTimeout(() => { globeSK = initGlobe("travel-map-sk"); }, 80);
+      }
     });
-
-    visitedPlaces.forEach(place => {
-      const randomCity =
-        place.cities[Math.floor(Math.random() * place.cities.length)];
-
-      const randomNumber = Math.floor(Math.random() * 90) + 10;
-
-      const popupText = `<b>${randomCity} ${place.code} — FREE#${randomNumber}</b>`;
-
-      const marker = L.marker(place.coords).bindPopup(popupText);
-
-      markers.addLayer(marker);
-    });
-
-    map.addLayer(markers);
-
-    return map;
-  }
-
-  mapENG = initMap("travel-map-eng");
-  mapSK  = initMap("travel-map-sk");
-
-  setTimeout(fixMap, 300);
-});
-
-/* ---------------- OPRAVA VEĽKOSTI MAPY PRI PREPÍNANÍ ---------------- */
-function fixMap() {
-  if (mapENG) mapENG.invalidateSize();
-  if (mapSK) mapSK.invalidateSize();
-
-  setTimeout(() => {
-    if (mapENG) mapENG.invalidateSize();
-    if (mapSK) mapSK.invalidateSize();
-  }, 300);
-
-  requestAnimationFrame(() => {
-    if (mapENG) mapENG.invalidateSize();
-    if (mapSK) mapSK.invalidateSize();
   });
-}
+});

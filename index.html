@@ -7,14 +7,9 @@
 
   <link rel="stylesheet" href="style.css" />
 
-  <!-- LEAFLET -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-
-  <!-- MARKER CLUSTER -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
-  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
-  <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+  <!-- GLOBE.GL + TOPOJSON -->
+  <script src="https://unpkg.com/globe.gl/dist/globe.gl.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/topojson@3.0.2/dist/topojson.min.js"></script>
 </head>
 
 <body>
@@ -26,6 +21,7 @@
       <button class="tab-button active" data-tab="info">Info</button>
       <button class="tab-button" data-tab="education">Education</button>
       <button class="tab-button" data-tab="experience">Certificates</button>
+      <button class="tab-button" data-tab="ctf">CTF</button>
     </nav>
 
     <!-- NAVBAR SK -->
@@ -33,6 +29,7 @@
       <button class="tab-button active" data-tab="info">Info</button>
       <button class="tab-button" data-tab="education">Vzdelanie</button>
       <button class="tab-button" data-tab="experience">Certifikáty</button>
+      <button class="tab-button" data-tab="ctf">CTF</button>
     </nav>
 
     <div class="lang-switch">
@@ -48,17 +45,73 @@
     <div class="lang-content lang-eng active">
 
       <section id="info-eng" class="tab-content active">
-        <div class="info-block">
+        <div class="info-block certs-block">
           <h1 class="name">Samuel Brian Oršoľa</h1>
           <p class="subtitle">21 y/o · Košice, Slovakia</p>
 
-          <p>
+          <p style="margin-top:14px;">
             Currently a 2nd year Cybersecurity student @ TUKE, exploring the world and digital defenses.
             Dreaming of Tokyo, building the skills to get there.
+            In my free time I travel and shoot photos wherever I go.
           </p>
 
-          <h3 style="margin-top:18px;">Travel map</h3>
-          <div id="travel-map-eng" class="travel-map"></div>
+          <div style="margin-top:18px;">
+
+            <details class="cert-accordion">
+              <summary class="cert-accordion-header">
+                <div style="display:flex;align-items:center;gap:12px;">
+                  <div class="cert-badge-img" style="background:#1a1a2e;display:flex;align-items:center;justify-content:center;font-size:1.3rem;">🗺️</div>
+                  <div style="text-align:left;">
+                    <div style="font-weight:600;font-size:1rem;">Travel map</div>
+                    <div style="color:#aaa;font-size:0.85rem;">Countries I've visited</div>
+                  </div>
+                </div>
+                <span class="cert-arrow">▼</span>
+              </summary>
+              <div class="cert-accordion-body" style="padding:12px;">
+                <div id="travel-map-eng" class="travel-map"></div>
+              </div>
+            </details>
+
+            <details class="cert-accordion">
+              <summary class="cert-accordion-header">
+                <div style="display:flex;align-items:center;gap:12px;">
+                  <div class="cert-badge-img" style="background:#1a1a2e;display:flex;align-items:center;justify-content:center;font-size:1.3rem;">📷</div>
+                  <div style="text-align:left;">
+                    <div style="font-weight:600;font-size:1rem;">Photography</div>
+                    <div style="color:#aaa;font-size:0.85rem;">@brians.photographies on Instagram</div>
+                  </div>
+                </div>
+                <span class="cert-arrow">▼</span>
+              </summary>
+              <div class="cert-accordion-body" style="padding:16px 18px;">
+                <!-- Instagram card -->
+                <div class="ig-card">
+                  <div class="ig-header">
+                    <div class="ig-avatar">📷</div>
+                    <div>
+                      <div class="ig-username">brians.photographies</div>
+                      <div class="ig-bio">Travel &amp; everyday moments</div>
+                    </div>
+                  </div>
+                  <!-- Photo grid — nahraď src vlastnými fotkami -->
+                  <div class="ig-grid">
+                    <a href="https://www.instagram.com/brians.photographies" target="_blank" class="ig-cell ig-placeholder"><span>📸</span></a>
+                    <a href="https://www.instagram.com/brians.photographies" target="_blank" class="ig-cell ig-placeholder"><span>📸</span></a>
+                    <a href="https://www.instagram.com/brians.photographies" target="_blank" class="ig-cell ig-placeholder"><span>📸</span></a>
+                    <a href="https://www.instagram.com/brians.photographies" target="_blank" class="ig-cell ig-placeholder"><span>📸</span></a>
+                    <a href="https://www.instagram.com/brians.photographies" target="_blank" class="ig-cell ig-placeholder"><span>📸</span></a>
+                    <a href="https://www.instagram.com/brians.photographies" target="_blank" class="ig-cell ig-placeholder"><span>📸</span></a>
+                  </div>
+                  <a href="https://www.instagram.com/brians.photographies" target="_blank" class="ig-follow-btn">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z"/></svg>
+                    View on Instagram
+                  </a>
+                </div>
+              </div>
+            </details>
+
+          </div>
         </div>
       </section>
 
@@ -86,13 +139,9 @@
               <h3>Technical University of Košice — FEI</h3>
               <p>Bachelor’s Degree · Cybersecurity</p>
               <p>2024 – </p>
-              <p style="color:#aaa;font-size:0.95rem;">Java · C</p>
+              <p style="color:#aaa;font-size:0.95rem;">Java · C · Linux</p>
               <p style="color:#888;font-size:0.9rem;">
-                Subjects: Cybersecurity · Security Management
-              </p>
-              <p style="color:#888;font-size:0.9rem;">
-                Coursework completed primarily in Linux environments via virtual machines,
-                with selected tasks performed on macOS
+                CIA/DAD triad · Risk management · Access control · IDS/IPS · SIEM · SOAR · VPN · DMZ · Honeypots · Cryptography · Incident response · Business continuity · Process management · Interprocess communication · Network programming
               </p>
             </div>
           </div>
@@ -100,11 +149,89 @@
       </section>
 
       <section id="experience-eng" class="tab-content">
-        <div class="info-block">
-          <iframe
-            src="https://tryhackme.com/api/v2/badges/public-profile?userPublicId=4155565"
-            style="border:none;width:100%;min-height:320px;"
-          ></iframe>
+        <div class="info-block certs-block">
+          <h2 style="margin-bottom:18px;">Certificates &amp; Badges</h2>
+
+          <!-- ISC2 CC accordion -->
+          <details class="cert-accordion">
+            <summary class="cert-accordion-header">
+              <div style="display:flex;align-items:center;gap:12px;">
+                <img src="https://images.credly.com/size/340x340/images/2030e43f-8003-4d4b-9630-847add403c87/image.png"
+                     alt="ISC2 CC Badge" class="cert-badge-img">
+                <div style="text-align:left;">
+                  <div style="font-weight:600;font-size:1rem;">CC — Certified in Cybersecurity</div>
+                  <div style="color:#aaa;font-size:0.85rem;">ISC2</div>
+                </div>
+              </div>
+              <span class="cert-arrow">▼</span>
+            </summary>
+            <div class="cert-accordion-body">
+              <p style="margin-bottom:8px;">The <strong>Certified in Cybersecurity (CC)</strong> certification validates foundational knowledge and skills in cybersecurity, issued by <strong>ISC2</strong> — one of the world's leading cybersecurity professional organizations.</p>
+              <p style="color:#aaa;font-size:0.9rem;">Topics covered: Security principles · Business continuity · Access controls · Network security · Security operations</p>
+            </div>
+          </details>
+
+          <!-- TryHackMe -->
+          <details class="cert-accordion">
+            <summary class="cert-accordion-header">
+              <div style="display:flex;align-items:center;gap:12px;">
+                <img src="https://assets.tryhackme.com/img/favicon.png"
+                     alt="TryHackMe" class="cert-badge-img" style="background:#1a1a2e;">
+                <div style="text-align:left;">
+                  <div style="font-weight:600;font-size:1rem;">TryHackMe Profile &amp; Badges</div>
+                  <div style="color:#aaa;font-size:0.85rem;">TryHackMe</div>
+                </div>
+              </div>
+              <span class="cert-arrow">▼</span>
+            </summary>
+            <div class="cert-accordion-body" style="padding-top:0;">
+              <iframe
+                src="https://tryhackme.com/api/v2/badges/public-profile?userPublicId=4155565"
+                style="border:none;width:100%;min-height:420px;"
+              ></iframe>
+            </div>
+          </details>
+
+        </div>
+      </section>
+
+      <section id="ctf-eng" class="tab-content">
+        <div class="info-block certs-block">
+          <h2 style="margin-bottom:18px;">CTF Competitions</h2>
+
+          <details class="cert-accordion">
+            <summary class="cert-accordion-header">
+              <div style="display:flex;align-items:center;gap:12px;">
+                <div class="cert-badge-img" style="background:#1a1a2e;display:flex;align-items:center;justify-content:center;font-size:1.3rem;">🎯</div>
+                <div style="text-align:left;">
+                  <div style="font-weight:600;font-size:1rem;">CyberGame</div>
+                  <div style="color:#aaa;font-size:0.85rem;">Slovak CTF competition</div>
+                </div>
+              </div>
+              <span class="cert-arrow">▼</span>
+            </summary>
+            <div class="cert-accordion-body">
+              <p style="color:#666;font-style:italic;">Coming soon — results and writeups will appear here.</p>
+            </div>
+          </details>
+
+          <details class="cert-accordion">
+            <summary class="cert-accordion-header">
+              <div style="display:flex;align-items:center;gap:12px;">
+                <img src="https://assets.tryhackme.com/img/favicon.png"
+                     alt="TryHackMe" class="cert-badge-img" style="background:#1a1a2e;">
+                <div style="text-align:left;">
+                  <div style="font-weight:600;font-size:1rem;">TryHackMe</div>
+                  <div style="color:#aaa;font-size:0.85rem;">Rooms &amp; challenges</div>
+                </div>
+              </div>
+              <span class="cert-arrow">▼</span>
+            </summary>
+            <div class="cert-accordion-body">
+              <p style="color:#666;font-style:italic;">Coming soon — completed rooms and writeups will appear here.</p>
+            </div>
+          </details>
+
         </div>
       </section>
 
@@ -114,17 +241,58 @@
     <div class="lang-content lang-sk">
 
       <section id="info-sk" class="tab-content active">
-        <div class="info-block">
+        <div class="info-block certs-block">
           <h1 class="name">Samuel Brian Oršoľa</h1>
           <p class="subtitle">21 rokov · Košice, Slovensko</p>
 
-          <p>
+          <p style="margin-top:14px;">
             Momentálne som študent 2. ročníka kyberbezpečnosti na TUKE, objavujem svet aj digitálne obrany.
             Snívam o Tokiu a budujem zručnosti, ktoré ma tam raz dostanú.
+            Vo voľnom čase cestujem a fotím všade, kam sa dostanem.
           </p>
 
-          <h3 style="margin-top:18px;">Cestovateľská mapa</h3>
-          <div id="travel-map-sk" class="travel-map"></div>
+          <div style="margin-top:18px;">
+
+            <details class="cert-accordion">
+              <summary class="cert-accordion-header">
+                <div style="display:flex;align-items:center;gap:12px;">
+                  <div class="cert-badge-img" style="background:#1a1a2e;display:flex;align-items:center;justify-content:center;font-size:1.3rem;">🗺️</div>
+                  <div style="text-align:left;">
+                    <div style="font-weight:600;font-size:1rem;">Cestovateľská mapa</div>
+                    <div style="color:#aaa;font-size:0.85rem;">Krajiny, ktoré som navštívil</div>
+                  </div>
+                </div>
+                <span class="cert-arrow">▼</span>
+              </summary>
+              <div class="cert-accordion-body" style="padding:12px;">
+                <div id="travel-map-sk" class="travel-map"></div>
+              </div>
+            </details>
+
+            <details class="cert-accordion">
+              <summary class="cert-accordion-header">
+                <div style="display:flex;align-items:center;gap:12px;">
+                  <div class="cert-badge-img" style="background:#1a1a2e;display:flex;align-items:center;justify-content:center;font-size:1.3rem;">📷</div>
+                  <div style="text-align:left;">
+                    <div style="font-weight:600;font-size:1rem;">Fotografia</div>
+                    <div style="color:#aaa;font-size:0.85rem;">@brians.photographies na Instagrame</div>
+                  </div>
+                </div>
+                <span class="cert-arrow">▼</span>
+              </summary>
+              <div class="cert-accordion-body">
+                <p style="margin-bottom:12px;">Zachytávam momenty z cestovania aj každodenného života.</p>
+                <a href="https://www.instagram.com/brians.photographies"
+                   target="_blank"
+                   style="display:inline-flex;align-items:center;gap:8px;background:#1a1a2e;border:2px solid #3a3a3a;color:#fff;padding:10px 18px;border-radius:10px;text-decoration:none;font-size:0.95rem;transition:border-color 0.25s ease;"
+                   onmouseover="this.style.borderColor='#888'" onmouseout="this.style.borderColor='#3a3a3a'">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z"/></svg>
+                  @brians.photographies
+                </a>
+              </div>
+            </details>
+
+          </div>
         </div>
       </section>
 
@@ -152,13 +320,9 @@
               <h3>Technická univerzita v Košiciach — FEI</h3>
               <p>Bakalárske štúdium · Kyberbezpečnosť</p>
               <p>2024 – </p>
-              <p style="color:#aaa;font-size:0.95rem;">Java · C</p>
+              <p style="color:#aaa;font-size:0.95rem;">Java · C · Linux</p>
               <p style="color:#888;font-size:0.9rem;">
-                Predmety: Kyberbezpečnosť · Bezpečnostný manažment
-              </p>
-              <p style="color:#888;font-size:0.9rem;">
-                Výučba prebiehala prevažne v Linux prostredí prostredníctvom virtuálnych strojov,
-                časť úloh bola riešená na macOS
+                CIA/DAD triáda · Riadenie rizík · Riadenie prístupu · IDS/IPS · SIEM · SOAR · VPN · DMZ · Honeypoty · Kryptografia · Incident response · Business continuity · Správa procesov · Medziprocesová komunikácia · Sieťové programovanie
               </p>
             </div>
           </div>
@@ -167,11 +331,89 @@
       </section>
 
       <section id="experience-sk" class="tab-content">
-        <div class="info-block">
-          <iframe
-            src="https://tryhackme.com/api/v2/badges/public-profile?userPublicId=4155565"
-            style="border:none;width:100%;min-height:320px;"
-          ></iframe>
+        <div class="info-block certs-block">
+          <h2 style="margin-bottom:18px;">Certifikáty &amp; Odznaky</h2>
+
+          <!-- ISC2 CC accordion -->
+          <details class="cert-accordion">
+            <summary class="cert-accordion-header">
+              <div style="display:flex;align-items:center;gap:12px;">
+                <img src="https://images.credly.com/size/340x340/images/2030e43f-8003-4d4b-9630-847add403c87/image.png"
+                     alt="ISC2 CC Badge" class="cert-badge-img">
+                <div style="text-align:left;">
+                  <div style="font-weight:600;font-size:1rem;">CC — Certified in Cybersecurity</div>
+                  <div style="color:#aaa;font-size:0.85rem;">ISC2</div>
+                </div>
+              </div>
+              <span class="cert-arrow">▼</span>
+            </summary>
+            <div class="cert-accordion-body">
+              <p style="margin-bottom:8px;">Certifikácia <strong>Certified in Cybersecurity (CC)</strong> potvrdzuje základné znalosti a zručnosti v oblasti kybernetickej bezpečnosti, vydaná organizáciou <strong>ISC2</strong>.</p>
+              <p style="color:#aaa;font-size:0.9rem;">Témy: Bezpečnostné princípy · Kontinuita podnikania · Riadenie prístupu · Sieťová bezpečnosť · Bezpečnostné operácie</p>
+            </div>
+          </details>
+
+          <!-- TryHackMe -->
+          <details class="cert-accordion">
+            <summary class="cert-accordion-header">
+              <div style="display:flex;align-items:center;gap:12px;">
+                <img src="https://assets.tryhackme.com/img/favicon.png"
+                     alt="TryHackMe" class="cert-badge-img" style="background:#1a1a2e;">
+                <div style="text-align:left;">
+                  <div style="font-weight:600;font-size:1rem;">TryHackMe Profil &amp; Odznaky</div>
+                  <div style="color:#aaa;font-size:0.85rem;">TryHackMe</div>
+                </div>
+              </div>
+              <span class="cert-arrow">▼</span>
+            </summary>
+            <div class="cert-accordion-body" style="padding-top:0;">
+              <iframe
+                src="https://tryhackme.com/api/v2/badges/public-profile?userPublicId=4155565"
+                style="border:none;width:100%;min-height:420px;"
+              ></iframe>
+            </div>
+          </details>
+
+        </div>
+      </section>
+
+      <section id="ctf-sk" class="tab-content">
+        <div class="info-block certs-block">
+          <h2 style="margin-bottom:18px;">CTF súťaže</h2>
+
+          <details class="cert-accordion">
+            <summary class="cert-accordion-header">
+              <div style="display:flex;align-items:center;gap:12px;">
+                <div class="cert-badge-img" style="background:#1a1a2e;display:flex;align-items:center;justify-content:center;font-size:1.3rem;">🎯</div>
+                <div style="text-align:left;">
+                  <div style="font-weight:600;font-size:1rem;">CyberGame</div>
+                  <div style="color:#aaa;font-size:0.85rem;">Slovenská CTF súťaž</div>
+                </div>
+              </div>
+              <span class="cert-arrow">▼</span>
+            </summary>
+            <div class="cert-accordion-body">
+              <p style="color:#666;font-style:italic;">Čoskoro — výsledky a writeupy pribudnú sem.</p>
+            </div>
+          </details>
+
+          <details class="cert-accordion">
+            <summary class="cert-accordion-header">
+              <div style="display:flex;align-items:center;gap:12px;">
+                <img src="https://assets.tryhackme.com/img/favicon.png"
+                     alt="TryHackMe" class="cert-badge-img" style="background:#1a1a2e;">
+                <div style="text-align:left;">
+                  <div style="font-weight:600;font-size:1rem;">TryHackMe</div>
+                  <div style="color:#aaa;font-size:0.85rem;">Roomy &amp; výzvy</div>
+                </div>
+              </div>
+              <span class="cert-arrow">▼</span>
+            </summary>
+            <div class="cert-accordion-body">
+              <p style="color:#666;font-style:italic;">Čoskoro — dokončené roomy a writeupy pribudnú sem.</p>
+            </div>
+          </details>
+
         </div>
       </section>
 
